@@ -1,5 +1,6 @@
+from typing import Optional
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from uuid import UUID
 
 app = FastAPI()
@@ -7,9 +8,12 @@ app = FastAPI()
 
 class Book(BaseModel):
     id: UUID
-    title: str
+    title: str = Field(
+        min_length=1)  # veri doğrulaması oluşturmak için ekleyebileceğimiz bir sürü farklı özelliğimiz var
     author: str
-    description: str
+    description: Optional[str] = Field(title="Description of the book",
+                                       max_length=100,
+                                       min_length=1)
     rating: int
 
 
@@ -25,22 +29,3 @@ async def read_all_books():
 async def create_book(book: Book):
     BOOKS.append(book)
     return book
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
